@@ -16,3 +16,7 @@ media/
 # Editor/OS
 .vscode/
 .DS_Store
+
+# 秘密情報（開発中のみ）
+.env
+.env.*
