@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>他の剣士の稽古動画・画像</title>
+    <style>
+        .sidebar-container {
+            width: 320px;
+            padding: 16px;
+            background-color: #1e293b;
+            color: #ffffff;
+            border-radius: 8px;
+            font-family: sans-serif;
+        }
+
+        .section-title {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        /* ボタンのスタイル */
+        .filter-btn {
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            background-color: #334155;
+            color: #ffffff;
+            transition: 0.2s;
+        }
+
+        /* ボタンがホバーされたとき */
+        .filter-btn:hover {
+            background-color: #475569;
+        }
+
+        /* 選択されているボタンのスタイル（赤色） */
+        .filter-btn.active {
+            background-color: #ef4444;
+            font-weight: bold;
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .video-card {
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        .badge {
+            font-size: 10px;
+            background-color: #3b82f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .card-title {
+            font-size: 12px;
+            margin: 6px 0 4px 0;
+            line-height: 1.4;
+        }
+
+        .user-info {
+            font-size: 10px;
+            color: #94a3b8;
+            margin: 0 0 6px 0;
+        }
+
+        .score-info {
+            font-size: 11px;
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar-container">
+        <!-- 1. 稽古種目フィルター -->
+        <div style="margin-bottom: 20px;">
+            <h3 class="section-title">稽古種目フィルター</h3>
+            <div class="filter-group">
+                {% for filter_name in filters %}
+                    <button class="filter-btn {% if filter_name == selected_filter %}active{% endif %}" onclick="selectFilter(this)">
+                        {{ filter_name }}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 2. 他の剣士の稽古動画・画像カード一覧 -->
+        <div>
+            <h3 class="section-title">
+                他の剣士の稽古動画・画像 ({{ dummy_videos|length }})
+            </h3>
+            <div class="card-list">
+                {% for item in dummy_videos %}
+                    <div class="video-card">
+                        <span class="badge">{{ item.type }}</span>
+                        <h4 class="card-title">{{ item.title }}</h4>
+                        <p class="user-info">{{ item.user_name }} • {{ item.user_role }}</p>
+                        <div class="score-info">
+                            🏆 {{ item.score }}点
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- ボタンを押した時に動く仕組み（JavaScript） -->
+    <script>
+        function selectFilter(element) {
+            // すべてのボタンから active（赤色）クラスを外す
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // クリックされたボタンだけに active（赤色）クラスをつける
+            element.classList.add('active');
+
+            // 押したことを確認する通知（動作テスト用）
+            alert('「' + element.innerText.trim() + '」フィルターが選択されました！');
+        }
+    </script>
+
+</body>
+</html>
