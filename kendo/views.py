@@ -47,6 +47,10 @@ def video_sidebar_view(request):
     return render(request, 'kendo/video_sidebar.html', context)
 
 
+def registration_view(request):
+    return render(request, 'registration.html')
+
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
