@@ -48,7 +48,7 @@ def video_sidebar_view(request):
 
 
 def registration_view(request):
-    return render(request, 'registration.html')
+    return render(request, 'kendo/header.html')
 
 
 class PostViewSet(viewsets.ModelViewSet):
