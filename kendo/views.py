@@ -6,6 +6,10 @@ from .models import Post, PostImage
 from .serializers import PostSerializer
 
 
+def main_view(request):
+    return render(request, 'kendo/main.html')
+
+
 def video_sidebar_view(request):
     # 稽古種目フィルターのリスト
     filters = ['すべて', '正面素振り', '中段の構え', '跳躍素振り（早素振り）', '左右素振り', '胴打ち・その他']
@@ -48,7 +52,7 @@ def video_sidebar_view(request):
 
 
 def registration_view(request):
-    return render(request, 'kendo/header.html')
+    return render(request, 'kendo/register.html')
 
 
 class PostViewSet(viewsets.ModelViewSet):

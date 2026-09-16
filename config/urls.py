@@ -23,7 +23,7 @@ from kendo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.video_sidebar_view, name='video_sidebar'),
+    path('', views.main_view, name='main'),
     path('api/', include('kendo.urls')),
 ]
 
