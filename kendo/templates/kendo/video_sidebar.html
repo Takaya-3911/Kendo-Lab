@@ -1,141 +1,112 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>他の剣士の稽古動画・画像</title>
-    <style>
-        .sidebar-container {
-            width: 320px;
-            padding: 16px;
-            background-color: #1e293b;
-            color: #ffffff;
-            border-radius: 8px;
-            font-family: sans-serif;
-        }
+<style>
+    .video-sidebar {
+        padding: 1rem;
+        background-color: #1e293b;
+        color: #ffffff;
+        border-radius: 8px;
+    }
+    .filter-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .filter-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 20px;
+        background-color: #334155;
+        color: #cbd5e1;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .filter-btn:hover {
+        background-color: #475569;
+        color: #ffffff;
+    }
+    .filter-btn.active {
+        background-color: #ef4444;
+        color: #ffffff;
+        font-weight: bold;
+    }
+    .section-title {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-bottom: 0.75rem;
+    }
+    .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .post-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    .post-card {
+        padding: 0.8rem;
+        background-color: #0f172a;
+        border-radius: 6px;
+        border: 1px solid #334155;
+        transition: border-color 0.2s;
+    }
+    .post-card:hover {
+        border-color: #3b82f6;
+    }
+    .badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        background-color: #3b82f6;
+        color: #ffffff;
+        border-radius: 4px;
+        margin-bottom: 0.4rem;
+    }
+    .card-title {
+        font-size: 0.95rem;
+        font-weight: bold;
+        margin: 0 0 0.3rem 0;
+        line-height: 1.3;
+    }
+    .user-info {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin: 0;
+    }
+    .no-data {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        text-align: center;
+        padding: 1rem 0;
+    }
+</style>
 
-        .section-title {
-            font-size: 15px;
-            margin-bottom: 10px;
-        }
+<aside class="video-sidebar">
+    <!-- 1. 動的カテゴリフィルターボタン -->
+    <div class="filter-group">
+        {% for filter_name in filters %}
+            <a href="?category={{ filter_name }}"
+               class="filter-btn {% if filter_name == selected_category %}active{% endif %}">
+                {{ filter_name }}
+            </a>
+        {% endfor %}
+    </div>
 
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
+    <p class="section-title">他の剣士の稽古動画・画像 ({{ posts|length }})</p>
 
-        /* ボタンのスタイル */
-        .filter-btn {
-            padding: 6px 12px;
-            border-radius: 16px;
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            background-color: #334155;
-            color: #ffffff;
-            transition: 0.2s;
-        }
-
-        /* ボタンがホバーされたとき */
-        .filter-btn:hover {
-            background-color: #475569;
-        }
-
-        /* 選択されているボタンのスタイル（赤色） */
-        .filter-btn.active {
-            background-color: #ef4444;
-            font-weight: bold;
-        }
-
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .video-card {
-            padding: 10px;
-            border-radius: 6px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-        }
-
-        .badge {
-            font-size: 10px;
-            background-color: #3b82f6;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .card-title {
-            font-size: 12px;
-            margin: 6px 0 4px 0;
-            line-height: 1.4;
-        }
-
-        .user-info {
-            font-size: 10px;
-            color: #94a3b8;
-            margin: 0 0 6px 0;
-        }
-
-        .score-info {
-            font-size: 11px;
-            color: #f59e0b;
-        }
-    </style>
-</head>
-<body>
-
-    <aside class="sidebar-container">
-        <!-- 1. 稽古種目フィルター -->
-        <div style="margin-bottom: 20px;">
-            <h3 class="section-title">稽古種目フィルター</h3>
-            <div class="filter-group">
-                {% for filter_name in filters %}
-                    <button class="filter-btn {% if filter_name == selected_filter %}active{% endif %}" onclick="selectFilter(this)">
-                        {{ filter_name }}
-                    </button>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- 2. 他の剣士の稽古動画・画像カード一覧 -->
-        <div>
-            <h3 class="section-title">
-                他の剣士の稽古動画・画像 ({{ dummy_videos|length }})
-            </h3>
-            <div class="card-list">
-                {% for item in dummy_videos %}
-                    <div class="video-card">
-                        <span class="badge">{{ item.type }}</span>
-                        <h4 class="card-title">{{ item.title }}</h4>
-                        <p class="user-info">{{ item.user_name }} • {{ item.user_role }}</p>
-                        <div class="score-info">
-                            🏆 {{ item.score }}点
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </aside>
-
-    <!-- ボタンを押した時に動く仕組み（JavaScript） -->
-    <script>
-        function selectFilter(element) {
-            // すべてのボタンから active（赤色）クラスを外す
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            // クリックされたボタンだけに active（赤色）クラスをつける
-            element.classList.add('active');
-
-            // 押したことを確認する通知（動作テスト用）
-            alert('「' + element.innerText.trim() + '」フィルターが選択されました！');
-        }
-    </script>
-
-</body>
-</html>
+    <!-- 2. 投稿一覧（最大5件） -->
+    <div class="post-list">
+        {% for post in posts %}
+            <a href="?category={{ selected_category }}&selected_id={{ post.id }}" class="post-card-link">
+                <div class="post-card">
+                    <span class="badge">{{ post.get_post_type_display }}</span>
+                    <h4 class="card-title">{{ post.title }}</h4>
+                    <p class="user-info">{{ post.nickname }} • {{ post.experience_period }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p class="no-data">該当する投稿がありません。</p>
+        {% endfor %}
+    </div>
+</aside>
