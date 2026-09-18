@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kendo Lab｜投稿詳細</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="kendo/static/kendo/css/style.css">
+    <style>
+        .header-inner {
+            flex-wrap: wrap;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            flex: 1 1 240px;
+            max-width: 340px;
+            background: var(--white);
+            border: 2px solid rgba(43, 38, 34, 0.12);
+            border-radius: 999px;
+            padding: 4px 6px 4px 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .header-search:focus-within {
+            border-color: var(--red);
+            box-shadow: 0 0 0 4px rgba(209, 67, 52, 0.12);
+        }
+
+        .header-search input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            background: transparent;
+            font: inherit;
+            font-size: 0.9rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .header-search input::placeholder {
+            color: var(--ink-soft);
+            opacity: 0.7;
+        }
+
+        .header-search button {
+            border: 0;
+            background: linear-gradient(135deg, var(--red), var(--red-deep));
+            color: var(--white);
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 8px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .header-search button:hover {
+            transform: translateY(-1px);
+        }
+
+        .content-frame {
+            display: block;
+            width: 100%;
+            height: 720px;
+            border: 0;
+            border-radius: 24px;
+            background: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .side-panel {
+            max-height: none;
+        }
+
+        .media-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .media-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid transparent;
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: var(--shadow-sm);
+            font-family: inherit;
+            color: var(--ink);
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .media-link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(209, 67, 52, 0.35);
+            box-shadow: var(--shadow-md);
+        }
+
+        .media-link.active {
+            border-color: var(--red);
+            background: var(--red-soft);
+        }
+
+        .media-thumb {
+            flex: 0 0 92px;
+            height: 58px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-family: "Shippori Mincho", serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            box-shadow: inset 0 -12px 18px rgba(0, 0, 0, 0.18);
+        }
+
+        .thumb-suburi { background: linear-gradient(135deg, #3b7a57, #6f8f5a); }
+        .thumb-basic  { background: linear-gradient(135deg, #8f6a35, #d1a76f); }
+        .thumb-step   { background: linear-gradient(135deg, #355f8f, #6fa3d1); }
+        .thumb-uchi   { background: linear-gradient(135deg, #b33527, #d14334); }
+        .thumb-kiri   { background: linear-gradient(135deg, #4a433d, #2b2622); }
+        .thumb-check  { background: linear-gradient(135deg, #6b5578, #a587b5); }
+
+        .media-body {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .media-title {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .media-kind {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--red-deep);
+        }
+
+        .media-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .media-meta time {
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width: 640px) {
+            .header-search {
+                order: 3;
+                max-width: none;
+                flex-basis: 100%;
+            }
+
+            .content-frame {
+                height: 640px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="preview.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">剣</span>
+                <span class="brand-text">
+                    <span class="brand-title">Kendo Lab</span>
+                    <span class="brand-sub">ケンドウ・ラボ</span>
+                </span>
+            </a>
+            <form class="header-search" role="search">
+                <input type="search" placeholder="動画・投稿を検索" aria-label="動画・投稿を検索">
+                <button type="submit">検索</button>
+            </form>
+            <nav class="site-nav" aria-label="メインナビゲーション">
+                <ul>
+                    <li><a href="preview.html">投稿をみる</a></li>
+                    <li><a href="#detail-area">詳細・AI分析</a></li>
+                </ul>
+            </nav>
+            <a href="#detail-area" class="btn btn-primary nav-cta">分析をみる</a>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="container app-layout">
+            <section class="hero-panel" aria-label="投稿詳細">
+                <iframe class="content-frame" src="content.html" title="動画詳細" loading="lazy"></iframe>
+            </section>
+            <aside class="side-bar side-panel" aria-label="投稿一覧">
+                <h2 class="side-bar-title">カテゴリ</h2>
+                <div class="sb-tabs">
+                    <button type="button" class="sb-link active" data-category="all">すべて</button>
+                    <button type="button" class="sb-link" data-category="suburi">素振り</button>
+                    <button type="button" class="sb-link" data-category="step">足さばき</button>
+                    <button type="button" class="sb-link" data-category="uchi">打突</button>
+                    <button type="button" class="sb-link" data-category="basic">基本</button>
+                </div>
+
+                <h2 class="side-bar-title">投稿一覧</h2>
+                <div class="media-list" id="post-list">
+                    <button type="button" class="media-link active" aria-current="true">
+                        <span class="media-thumb thumb-suburi" aria-hidden="true">素</span>
+                        <span class="media-body">
+                            <span class="media-title">【動画】跳躍素振り50本！剣道・下半身強化トレーニング</span>
+                            <span class="media-meta">
+                                <span class="media-kind">動画</span>
+                                <span class="post-cat">素振り</span>
+                                <time>2026/09/10</time>
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="media-link">
+                        <span class="media-thumb thumb-basic" aria-hidden="true">手</span>
+                        <span class="media-body">
+                            <span class="media-title">【画像】正しい竹刀の握り方～手の内の基本～</span>
+                            <span class="media-meta">
+                                <span class="media-kind">画像</span>
+                                <span class="post-cat">基本</span>
+                                <time>2026/09/08</time>
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="media-link">
+                        <span class="media-thumb thumb-step" aria-hidden="true">足</span>
+                        <span class="media-body">
+                            <span class="media-title">【動画】すり足で軸を鍛える基本トレーニング</span>
+                            <span class="media-meta">
+                                <span class="media-kind">動画</span>
+                                <span class="post-cat">足さばき</span>
+                                <time>2026/09/05</time>
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="media-link">
+                        <span class="media-thumb thumb-uchi" aria-hidden="true">打</span>
+                        <span class="media-body">
+                            <span class="media-title">【動画】面打ちの足さばき・踏み込み徹底解説</span>
+                            <span class="media-meta">
+                                <span class="media-kind">動画</span>
+                                <span class="post-cat">打突</span>
+                                <time>2026/09/01</time>
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="media-link">
+                        <span class="media-thumb thumb-check" aria-hidden="true">型</span>
+                        <span class="media-body">
+                            <span class="media-title">【画像】素振りの腕の伸ばし方チェックリスト</span>
+                            <span class="media-meta">
+                                <span class="media-kind">画像</span>
+                                <span class="post-cat">素振り</span>
+                                <time>2026/08/28</time>
+                            </span>
+                        </span>
+                    </button>
+                    <button type="button" class="media-link">
+                        <span class="media-thumb thumb-kiri" aria-hidden="true">切</span>
+                        <span class="media-body">
+                            <span class="media-title">【動画】基本の切り返し50振～リズムで稽古～</span>
+                            <span class="media-meta">
+                                <span class="media-kind">動画</span>
+                                <span class="post-cat">切り返し</span>
+                                <time>2026/08/22</time>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="brand-mark small" aria-hidden="true">剣</span>
+                <span class="brand-text">
+                    <span class="brand-title">Kendo Lab</span>
+                    <span class="brand-sub">ケンドウ・ラボ</span>
+                </span>
+            </div>
+            <nav class="footer-nav" aria-label="フッターナビゲーション">
+                <ul>
+                    <li><a href="preview.html">投稿をみる</a></li>
+                    <li><a href="#detail-area">詳細・AI分析</a></li>
+                </ul>
+            </nav>
+            <p class="footer-note">© 2026 Kendo Lab. あなたの稽古を、やさしく最強に。</p>
+        </div>
+    </footer>
+</body>
+</html>

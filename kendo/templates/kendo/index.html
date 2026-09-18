@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kendo Lab｜剣道フォーム分析とトレーニング</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'kendo/css/style.css' %}">
+</head>
+<body>
+    {% include "kendo/_header.html" %}
+
+    <main class="app-main">
+        <div class="container app-layout">
+            <section class="hero-panel" aria-label="投稿詳細">
+                {% include "kendo/hero.html" %}
+            </section>
+            <aside class="side-bar side-panel" aria-label="投稿一覧">
+                {% include "kendo/_side-bar.html" %}
+            </aside>
+        </div>
+    </main>
+
+    {% include "kendo/_footer.html" %}
+
+    <script src="{% static 'kendo/js/main.js' %}"></script>
+</body>
+</html>

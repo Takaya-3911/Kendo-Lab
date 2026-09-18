@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+{% load static %}
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="kendo/static/kendo/css/style.css">
+    <link rel="stylesheet" href="{% static 'kendo/css/style.css' %}">
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a href="#" class="brand">
+            <a href="{% url 'home' %}" class="brand">
                 <span class="brand-mark" aria-hidden="true">剣</span>
                 <span class="brand-text">
                     <span class="brand-title">Kendo Lab</span>
@@ -74,6 +74,35 @@
                 </div>
             </div>
             <div class="wave-bottom" aria-hidden="true"></div>
+        </section>
+
+        <section class="post-panel">
+            <div class="container post-panel-inner">
+                <aside class="side-bar" aria-label="カテゴリ">
+                    <h2 class="side-bar-title">カテゴリ</h2>
+                    <ul class="side-bar-list">
+                        <li><button type="button" class="sb-link active" data-category="all">すべて</button></li>
+                        {% for category in categories %}
+                        <li><button type="button" class="sb-link" data-category="{{ category }}">{{ category }}</button></li>
+                        {% endfor %}
+                    </ul>
+                </aside>
+                <div class="post-area">
+                    <h2 class="post-area-title">最新の投稿</h2>
+                    <div class="post-list" id="post-list">
+                        {% for post in posts %}
+                        <article class="post-card">
+                            <div class="post-card-head">
+                                <h3>{{ post.title }}</h3>
+                                <span class="post-cat">{{ post.category }}</span>
+                            </div>
+                            <p>{{ post.content }}</p>
+                            <time>{{ post.created_at|date:"Y/m/d" }}</time>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="features" class="features">
@@ -218,6 +247,6 @@
         </div>
     </footer>
 
-    <script src="kendo/static/kendo/js/main.js"></script>
+    <script src="{% static 'kendo/js/main.js' %}"></script>
 </body>
 </html>

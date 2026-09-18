@@ -1,0 +1,19 @@
+<h2 class="side-bar-title serif">カテゴリ</h2>
+<div class="sb-tabs" id="sb-tabs">
+    <button type="button" class="sb-link active" data-category="all">すべて</button>
+    {% for category in categories %}
+    <button type="button" class="sb-link" data-category="{{ category }}">{{ category }}</button>
+    {% endfor %}
+</div>
+
+<h2 class="side-bar-title serif">投稿一覧</h2>
+<div class="side-post-list" id="post-list">
+    {% for post in posts %}
+    <button type="button" class="post-link{% if selected_post and post.id == selected_post.id %} active{% endif %}"
+            data-post-id="{{ post.id }}"
+            {% if selected_post and post.id == selected_post.id %}aria-current="true"{% endif %}>
+        <span class="post-link-title">{{ post.title }}</span>
+        <span class="post-cat">{{ post.category }}</span>
+    </button>
+    {% endfor %}
+</div>

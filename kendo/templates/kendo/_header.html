@@ -1,0 +1,19 @@
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-mark" aria-hidden="true">剣</span>
+            <span class="brand-text">
+                <span class="brand-title">Kendo Lab</span>
+                <span class="brand-sub">ケンドウ・ラボ</span>
+            </span>
+        </a>
+        <nav class="site-nav" aria-label="メインナビゲーション">
+            <ul>
+                <li><a href="{% url 'home' %}">投稿をみる</a></li>
+                <li><a href="#detail-area">詳細・AI分析</a></li>
+                <li><a href="#comment-section">コメント</a></li>
+            </ul>
+        </nav>
+        <a href="#detail-area" class="btn btn-primary nav-cta">分析をみる</a>
+    </div>
+</header>

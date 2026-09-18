@@ -1,0 +1,58 @@
+{% if selected_post %}
+<article class="detail-card" id="detail-area">
+    <div class="detail-head">
+        <span class="post-cat" id="detail-category">{{ selected_post.category }}</span>
+        <h2 class="detail-title" id="detail-title">{{ selected_post.title }}</h2>
+        <time class="detail-date" id="detail-date">{{ selected_post.created_at|date:"Y/m/d" }}</time>
+    </div>
+    <p class="detail-body" id="detail-body">{{ selected_post.content }}</p>
+</article>
+
+<section class="ai-panel" id="ai-panel">
+    <div class="ai-panel-head">
+        <h3 class="ai-panel-title">AI フォーム分析</h3>
+        <span class="ai-chip">AI 解析済み</span>
+    </div>
+    <div class="ai-score" id="ai-score-box"{% if not selected_analysis %} hidden{% endif %}>
+        <span class="ai-score-label">総合スコア</span>
+        <span class="ai-score-value" id="ai-score">{% if selected_analysis %}{{ selected_analysis.score }}{% endif %}</span>
+        <span class="ai-score-max">/ 100</span>
+    </div>
+    <p class="ai-summary{% if not selected_analysis %} ai-empty{% endif %}" id="ai-summary">{% if selected_analysis %}{{ selected_analysis.summary }}{% else %}この投稿はまだ分析されていません。動画・画像をアップロードすると AI が解析します。{% endif %}</p>
+    <time class="ai-date" id="ai-date"{% if not selected_analysis %} hidden{% endif %}>{% if selected_analysis %}{{ selected_analysis.created_at|date:"Y/m/d" }} の分析結果{% endif %}</time>
+</section>
+
+<section class="comment-section" id="comment-section">
+    <h3 class="comment-title">コメント</h3>
+    <form class="comment-form" id="comment-form">
+        {% csrf_token %}
+        <input type="hidden" name="post_id" id="comment-post-id" value="{{ selected_post.id }}">
+        <div class="comment-form-row">
+            <input type="text" name="author" id="comment-author" placeholder="名前（任意・最大100文字）" maxlength="100">
+            <textarea name="body" id="comment-body" rows="3" placeholder="コメントを入力…" required></textarea>
+        </div>
+        <div class="comment-form-foot">
+            <p class="comment-error" id="comment-error" hidden></p>
+            <button type="submit" class="btn btn-primary btn-sm">コメントを投稿</button>
+        </div>
+    </form>
+    <div class="comment-list" id="comment-list">
+        {% for comment in selected_comments %}
+        <div class="comment-item" data-comment-id="{{ comment.id }}">
+            <div class="comment-meta">
+                <strong>{{ comment.author }}</strong>
+                <time>{{ comment.created_at|date:"Y/m/d H:i" }}</time>
+            </div>
+            <p>{{ comment.body }}</p>
+        </div>
+        {% empty %}
+        <p class="comment-empty">まだコメントはありません。最初のコメントを投稿してみましょう。</p>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<section class="detail-card detail-empty" id="detail-area">
+    <h2 class="detail-title">投稿がありません</h2>
+    <p class="detail-body">サイドバーに表示する投稿がまだありません。管理画面から投稿を作成してください。</p>
+</section>
+{% endif %}
