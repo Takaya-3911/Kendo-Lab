@@ -1,69 +1,29 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>剣道ラボ</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        .layout {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .header {
-            background-color: #1e293b;
-            color: #ffffff;
-            padding: 16px 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .main {
-            display: flex;
-            flex: 1;
-        }
-        .content {
-            flex: 1;
-            padding: 24px;
-            min-width: 0;
-        }
-        .sidebar {
-            width: 320px;
-            flex-shrink: 0;
-            padding: 16px;
-            background-color: #1e293b;
-            color: #ffffff;
-            overflow-y: auto;
-            height: calc(100vh - 60px);
-            position: sticky;
-            top: 60px;
-        }
-    </style>
+    <title>Kendo Lab｜剣道ラボ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'kendo/css/style.css' %}">
 </head>
 <body>
-    <div class="layout">
-        <header class="header">
-            {% include "kendo/header.html" %}
-        </header>
-        <div class="main">
-            <main class="content">
+    {% include "kendo/header.html" %}
+
+    <main class="app-main">
+        <div class="container app-layout">
+            <section class="hero-panel" aria-label="投稿詳細">
                 {% include "kendo/content.html" %}
-            </main>
-            <aside class="sidebar">
+            </section>
+            <aside class="side-bar side-panel" aria-label="投稿一覧">
                 {% include "kendo/video_sidebar.html" %}
             </aside>
         </div>
-    </div>
+    </main>
+
+    {% include "kendo/footer.html" %}
 </body>
 </html>

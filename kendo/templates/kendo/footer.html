@@ -1,0 +1,21 @@
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <span class="brand-mark small" aria-hidden="true">剣</span>
+            <span class="brand-text">
+                <span class="brand-title">Kendo Lab</span>
+                <span class="brand-sub">ケンドウ・ラボ</span>
+            </span>
+        </div>
+        <nav class="footer-nav" aria-label="フッターナビゲーション">
+            <ul>
+                <li><a href="{% url 'main' %}">トップ</a></li>
+                <li><a href="#detail-area">投稿詳細</a></li>
+                {% if selected_post %}
+                <li><a href="#comment-section">コメント</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <p class="footer-note">© 2026 Kendo Lab. あなたの稽古を、やさしく最強に。</p>
+    </div>
+</footer>

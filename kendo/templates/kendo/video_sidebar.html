@@ -1,112 +1,29 @@
-<style>
-    .video-sidebar {
-        padding: 1rem;
-        background-color: #1e293b;
-        color: #ffffff;
-        border-radius: 8px;
-    }
-    .filter-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-    .filter-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-        border-radius: 20px;
-        background-color: #334155;
-        color: #cbd5e1;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
-    .filter-btn:hover {
-        background-color: #475569;
-        color: #ffffff;
-    }
-    .filter-btn.active {
-        background-color: #ef4444;
-        color: #ffffff;
-        font-weight: bold;
-    }
-    .section-title {
-        font-size: 0.9rem;
-        color: #94a3b8;
-        margin-bottom: 0.75rem;
-    }
-    .post-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    .post-card-link {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
-    .post-card {
-        padding: 0.8rem;
-        background-color: #0f172a;
-        border-radius: 6px;
-        border: 1px solid #334155;
-        transition: border-color 0.2s;
-    }
-    .post-card:hover {
-        border-color: #3b82f6;
-    }
-    .badge {
-        display: inline-block;
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        background-color: #3b82f6;
-        color: #ffffff;
-        border-radius: 4px;
-        margin-bottom: 0.4rem;
-    }
-    .card-title {
-        font-size: 0.95rem;
-        font-weight: bold;
-        margin: 0 0 0.3rem 0;
-        line-height: 1.3;
-    }
-    .user-info {
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin: 0;
-    }
-    .no-data {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        text-align: center;
-        padding: 1rem 0;
-    }
-</style>
+<!-- 1. 動的カテゴリフィルター -->
+<h2 class="side-bar-title">カテゴリ</h2>
+<div class="sb-tabs">
+    {% for filter_name in filters %}
+        <a href="?category={{ filter_name|urlencode }}"
+           class="sb-link{% if filter_name == selected_category %} active{% endif %}"
+           {% if filter_name == selected_category %}aria-current="page"{% endif %}>
+            {{ filter_name }}
+        </a>
+    {% endfor %}
+</div>
 
-<aside class="video-sidebar">
-    <!-- 1. 動的カテゴリフィルターボタン -->
-    <div class="filter-group">
-        {% for filter_name in filters %}
-            <a href="?category={{ filter_name }}"
-               class="filter-btn {% if filter_name == selected_category %}active{% endif %}">
-                {{ filter_name }}
-            </a>
-        {% endfor %}
-    </div>
-
-    <p class="section-title">他の剣士の稽古動画・画像 ({{ posts|length }})</p>
-
-    <!-- 2. 投稿一覧（最大5件） -->
-    <div class="post-list">
-        {% for post in posts %}
-            <a href="?category={{ selected_category }}&selected_id={{ post.id }}" class="post-card-link">
-                <div class="post-card">
-                    <span class="badge">{{ post.get_post_type_display }}</span>
-                    <h4 class="card-title">{{ post.title }}</h4>
-                    <p class="user-info">{{ post.nickname }} • {{ post.experience_period }}</p>
-                </div>
-            </a>
-        {% empty %}
-            <p class="no-data">該当する投稿がありません。</p>
-        {% endfor %}
-    </div>
-</aside>
+<!-- 2. 投稿一覧（最大5件） -->
+<h2 class="side-bar-title">他の剣士の稽古動画・画像 ({{ posts|length }})</h2>
+<div class="side-post-list">
+    {% for post in posts %}
+        <a href="?category={{ selected_category|urlencode }}&selected_id={{ post.id }}"
+           class="post-link{% if selected_post and post.id == selected_post.id %} active{% endif %}"
+           {% if selected_post and post.id == selected_post.id %}aria-current="true"{% endif %}>
+            <span class="post-link-body">
+                <span class="post-link-title">{{ post.title }}</span>
+                <span class="post-link-meta">{{ post.nickname }} • {{ post.experience_period }}</span>
+            </span>
+            <span class="post-cat">{{ post.get_post_type_display }}</span>
+        </a>
+    {% empty %}
+        <p class="post-empty">該当する投稿がありません。</p>
+    {% endfor %}
+</div>

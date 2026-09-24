@@ -1,61 +1,42 @@
-<style>
-    .main-content-display {
-        padding: 1rem;
-    }
-    .meta-info {
-        font-size: 0.9rem;
-        color: #64748b;
-        margin-bottom: 1rem;
-    }
-    .memo-box {
-        margin-top: 1rem;
-        padding: 0.8rem;
-        background-color: #f8fafc;
-        border-left: 4px solid #3b82f6;
-        border-radius: 4px;
-    }
-    .placeholder,
-    .no-selection {
-        color: #94a3b8;
-        padding: 2rem 0;
-        text-align: center;
-    }
-    .image-gallery img {
-        border-radius: 6px;
-    }
-</style>
-
-<div class="main-content-display">
-    {% if selected_post %}
-        <h2>{{ selected_post.title }}</h2>
-        <p class="meta-info">
-            投稿者: {{ selected_post.nickname }} ({{ selected_post.experience_period }})
-            | カテゴリ: {{ selected_post.category }}
-        </p>
+{% if selected_post %}
+    <article class="detail-card" id="detail-area">
+        <div class="detail-head">
+            <div class="detail-meta">
+                <span class="detail-kind">{{ selected_post.get_post_type_display }}</span>
+                <span class="post-cat">{{ selected_post.category }}</span>
+                <time class="detail-date">{{ selected_post.created_at|date:"Y/m/d" }}</time>
+            </div>
+            <h2 class="detail-title">{{ selected_post.title }}</h2>
+            <p class="detail-meta">投稿者: {{ selected_post.nickname }}（{{ selected_post.experience_period }}）</p>
+        </div>
 
         <!-- 動画の場合 -->
         {% if selected_post.video %}
-            <video src="{{ selected_post.video.url }}" controls style="width: 100%; max-height: 500px;"></video>
+            <div class="detail-media">
+                <video src="{{ selected_post.video.url }}" controls></video>
+            </div>
         <!-- 画像（PostImage）の場合 -->
         {% elif selected_post.images.all %}
-            <div class="image-gallery">
-                <img src="{{ selected_post.images.first.image.url }}" style="width: 100%; max-height: 500px; object-fit: contain;" />
+            <div class="detail-media image-gallery">
+                <img src="{{ selected_post.images.first.image.url }}" alt="{{ selected_post.title }}">
             </div>
         {% else %}
-            <div class="placeholder">プレビューデータがありません</div>
+            <div class="detail-media detail-media-empty">プレビューデータがありません</div>
         {% endif %}
 
         <!-- メモ -->
         {% if selected_post.memo %}
             <div class="memo-box">
-                <p><strong>稽古メモ:</strong> {{ selected_post.memo }}</p>
+                <span class="memo-label">稽古メモ</span>
+                <p class="detail-body">{{ selected_post.memo }}</p>
             </div>
         {% endif %}
-        {% include "kendo/comment.html" %}
+    </article>
 
-    {% else %}
-        <div class="no-selection">
-            <p>表示できる投稿がありません。ヘッダーから投稿してみましょう！</p>
-        </div>
-    {% endif %}
-</div>
+    {% include "kendo/comment.html" %}
+{% else %}
+    <section class="detail-card detail-empty" id="detail-area">
+        <h2 class="detail-title">投稿がありません</h2>
+        <p class="detail-body">表示できる投稿がありません。ヘッダーから投稿してみましょう！</p>
+    </section>
+{% endif %}
