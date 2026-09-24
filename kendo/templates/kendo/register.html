@@ -188,8 +188,6 @@
     const form = document.getElementById("postForm");
     const submitBtn = document.getElementById("submitBtn");
     const message = document.getElementById("message");
-    // サイドバーに表示されるリスト
-    const list = document.querySelector(".post-list");
     const postTypeRadios = document.querySelectorAll('input[name="post_type"]');
     const videoSection = document.getElementById("videoSection");
     const imageSection = document.getElementById("imageSection");
@@ -215,33 +213,6 @@
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(";").shift();
       return null;
-    }
-
-    // 新しいサイドバーコンテンツを作成する機能
-    function createSidebarContent(data) {
-      const frame = document.createElement("a");
-      frame.className = "post-card-link";
-      frame.href = `?category=${data.category}&selected_id=${data.id}`;
-
-      const card = document.createElement("div");
-      card.className = "post-card";
-
-      // ここはサムネイルに修正する予定
-      const badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = data.post_type;
-
-      const cardTitle = document.createElement("h4");
-      cardTitle.className = "card-title";
-      cardTitle.textContent = data.title;
-
-      const userInfo = document.createElement("p");
-      userInfo.className = "user-info";
-      userInfo.textContent = `${data.nickname} • ${data.experience_period}`;
-
-      card.append(badge, cardTitle, userInfo);
-      frame.appendChild(card);
-      return frame;
     }
 
     form.addEventListener("submit", async (e) => {
