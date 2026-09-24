@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .models import Post, PostImage
-from .serializers import PostSerializer
+from .models import Post, PostImage, Comment
+from .serializers import CommentSerializer, PostSerializer
 
 
 def main_view(request):
@@ -124,3 +124,9 @@ class PostViewSet(viewsets.ModelViewSet):
             PostImage.objects.create(post=post, image=image)
 
         return Response(self.get_serializer(post).data, status=status.HTTP_201_CREATED)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    
