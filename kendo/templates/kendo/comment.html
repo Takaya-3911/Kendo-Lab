@@ -1,0 +1,358 @@
+<style>
+    .comment-section {
+        margin-top: 2rem;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.2rem 1.2rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .comment-header {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .comment-header h3 {
+        font-size: 1.1rem;
+        color: #1e293b;
+    }
+
+    .comment-count {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        border-top: 1px dashed #cbd5e1;
+        padding-top: 1rem;
+    }
+
+    .comment-card {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        border-left: 4px solid #cbd5e1;
+    }
+
+    .comment-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .comment-author {
+        display: flex;
+        align-items: center;
+        column-gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.25rem;
+    }
+
+    .comment-nickname {
+        font-weight: bold;
+        color: #1e293b;
+    }
+
+    .level-badge {
+        font-size: 0.7rem;
+        font-weight: bold;
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        color: #ffffff;
+        background-color: #94a3b8;
+        white-space: nowrap;
+    }
+
+    .comment-card[data-level="instructor"] .level-badge {
+        background-color: #b45309;
+    }
+
+    .comment-card[data-level="4th_dan_plus"] .level-badge,
+    .comment-card[data-level="sandan"] .level-badge {
+        background-color: #1d4ed8;
+    }
+
+    .comment-card[data-level="nidan"] .level-badge,
+    .comment-card[data-level="shodan"] .level-badge {
+        background-color: #2563eb;
+    }
+
+    .comment-card[data-level="1_year"] .level-badge,
+    .comment-card[data-level="beginner"] .level-badge {
+        background-color: #16a34a;
+    }
+
+    .comment-date {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        display: block;
+        width: 100%;
+    }
+
+    .comment-text {
+        font-size: 0.95rem;
+        color: #334155;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .no-comments {
+        text-align: center;
+        color: #94a3b8;
+        padding: 1.5rem 0;
+        font-size: 0.9rem;
+    }
+
+    /* コメント投稿フォーム */
+    #commentForm {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .comment-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+    }
+
+    #commentForm p,
+    #commentForm label {
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #334155;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    #commentForm input[type="text"],
+    #commentForm textarea,
+    #commentForm select {
+        width: 100%;
+        padding: 0.55rem 0.75rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        background-color: #ffffff;
+        color: #1e293b;
+        box-sizing: border-box;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    #commentForm input[type="text"]:focus,
+    #commentForm textarea:focus,
+    #commentForm select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    #commentForm button {
+        align-self: flex-start;
+        background-color: #3b82f6;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.6rem 1.4rem;
+        font-size: 0.95rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.15s;
+    }
+
+    #commentForm button:hover {
+        background-color: #2563eb;
+    }
+
+    #commentForm textarea {
+        resize: none;
+    }
+
+    .comment-message {
+        font-size: 0.85rem;
+        margin-top: 0.2rem;
+    }
+
+    .comment-message.success {
+        color: #16a34a;
+    }
+
+    .comment-message.error {
+        color: #dc2626;
+    }
+</style>
+<!-- コメントセクション -->
+<div class="comment-section">
+    <!-- コメント投稿フォーム -->
+    <form id="commentForm">
+        <input type="hidden" name="post" value="{{ selected_post.id }}">
+        <!-- 名前 -->
+        <div class="comment-row">
+            <div class="comment-field">
+                <p>お名前・ニックネーム</p><input type="text" name="nickname" required>
+            </div>
+            <!-- 段位 -->
+            <div class="level-group">
+                <label for="level">あなたの段位</label>
+                <select name="level" id="level">
+                    <option value="beginner">初心者仲間</option>
+                    <option value="1_year">剣道歴1年</option>
+                    <option value="shodan" selected>初段</option>
+                    <option value="nidan">二段</option>
+                    <option value="sandan">三段</option>
+                    <option value="4th_dan_plus">四段以上</option>
+                    <option value="instructor">指導員・先生</option>
+                </select>
+            </div>
+        </div>
+        <!-- コメント -->
+        <textarea id="commentText" name="comment" rows="4" placeholder="コメントを書く" required></textarea>
+        <!-- ボタン -->
+        <button type="submit">コメントを投稿</button>
+        <div id="commentMessage" class="comment-message"></div>
+
+    </form>
+    <!-- コメント一覧 -->
+    <div class="comment-header">
+        <h3>コメント</h3>
+        <span class="comment-count">{{ selected_post.comments.all|length }}件</span>
+    </div>
+
+    <div class="comment-list">
+        {% for item in selected_post.comments.all %}
+        <div class="comment-card" data-level="{{ item.level }}">
+            <div class="comment-top">
+                <div class="comment-author">
+                    <span class="comment-nickname">{{ item.nickname }}</span>
+                    <span class="level-badge">{{ item.get_level_display }}</span>
+                    <span class="comment-date">{{ item.created_at|date:"n/j H:i" }}</span>
+                </div>
+            </div>
+            <p class="comment-text">{{ item.comment }}</p>
+        </div>
+        {% empty %}
+        <p class="no-comments">まだコメントはありません</p>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    (function () {
+        const form = document.getElementById("commentForm");
+        if (!form) return;
+
+        const section = form.closest(".comment-section");
+        const list = section.querySelector(".comment-list");
+        const countEl = section.querySelector(".comment-count");
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const message = document.getElementById("commentMessage");
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(";").shift();
+            return null;
+        }
+
+        function formatDateTime(iso) {
+            const d = new Date(iso);
+            const month = d.getUTCMonth() + 1;
+            const day = d.getUTCDate();
+            const hours = String(d.getUTCHours()).padStart(2, "0");
+            const minutes = String(d.getUTCMinutes()).padStart(2, "0");
+            return `${month}/${day} ${hours}:${minutes}`;
+        }
+
+        function createCommentCard(data) {
+            const card = document.createElement("div");
+            card.className = "comment-card";
+            card.dataset.level = data.level;
+
+            const top = document.createElement("div");
+            top.className = "comment-top";
+
+            const author = document.createElement("div");
+            author.className = "comment-author";
+
+            const nick = document.createElement("span");
+            nick.className = "comment-nickname";
+            nick.textContent = data.nickname;
+
+            const badge = document.createElement("span");
+            badge.className = "level-badge";
+            badge.textContent = data.level_display;
+
+            const date = document.createElement("span");
+            date.className = "comment-date";
+            date.textContent = formatDateTime(data.created_at);
+
+            author.append(nick, badge, date);
+            top.appendChild(author);
+
+            const text = document.createElement("p");
+            text.className = "comment-text";
+            text.textContent = data.comment;
+
+            card.append(top, text);
+            return card;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            message.textContent = "";
+            message.className = "comment-message";
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("/api/comments/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: formData,
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    let detail = result.detail;
+                    if (!detail) {
+                        for (const key of Object.keys(result)) {
+                            const errors = result[key];
+                            if (Array.isArray(errors) && errors.length) {
+                                detail = errors[0];
+                                break;
+                            }
+                        }
+                    }
+                    message.textContent = detail || "コメントの投稿に失敗しました。";
+                    message.classList.add("error");
+                    return;
+                }
+
+                list.prepend(createCommentCard(result));
+                const noComments = section.querySelector(".no-comments");
+                if (noComments) noComments.remove();
+                countEl.textContent = list.querySelectorAll(".comment-card").length + "件";
+                form.reset();
+                message.textContent = "コメントを投稿しました。";
+                message.classList.add("success");
+            } catch (err) {
+                message.textContent = "通信エラーが発生しました。もう一度お試しください。";
+                message.classList.add("error");
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    })();
+</script>

@@ -1,19 +1,17 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import AiAnalysis, Comment, Post
+from .models import Comment, Post
 
 
 class PostApiTests(TestCase):
     def setUp(self):
         self.post = Post.objects.create(
-            title="テスト投稿", content="テスト本文", category="構え"
+            post_type="video", experience_period="1年", nickname="投稿者",
+            title="テスト投稿", memo="テスト本文", category="構え"
         )
         self.comment = Comment.objects.create(
-            post=self.post, author="太郎", body="良い記事ですね"
-        )
-        self.analysis = AiAnalysis.objects.create(
-            post=self.post, score=88, summary="軸が安定しています。"
+            post=self.post, nickname="太郎", comment="良い記事ですね"
         )
 
     def test_home_renders_selected_post(self):
@@ -23,7 +21,10 @@ class PostApiTests(TestCase):
         self.assertContains(res, "良い記事ですね")
 
     def test_posts_json_filters_by_category(self):
-        Post.objects.create(title="絞り込み確認", content="x", category="テスト専用")
+        Post.objects.create(
+            post_type="video", experience_period="1年", nickname="投稿者",
+            title="絞り込み確認", memo="x", category="テスト専用"
+        )
         res = self.client.get(reverse("posts_json"), {"category": "テスト専用"})
         data = res.json()
         self.assertEqual([p["title"] for p in data["posts"]], ["絞り込み確認"])
@@ -32,7 +33,7 @@ class PostApiTests(TestCase):
         res = self.client.get(reverse("post_detail_json", args=[self.post.id]))
         data = res.json()
         self.assertEqual(data["post"]["title"], "テスト投稿")
-        self.assertEqual(data["analysis"]["score"], 88)
+        self.assertIsNone(data["analysis"])
         self.assertEqual(data["comments"][0]["body"], "良い記事ですね")
 
     def test_add_comment_creates_comment(self):
@@ -44,7 +45,7 @@ class PostApiTests(TestCase):
         self.assertTrue(res.json()["ok"])
         self.assertEqual(Comment.objects.count(), 2)
         comment = self.post.comments.latest("id")
-        self.assertEqual(comment.author, "花子")
+        self.assertEqual(comment.nickname, "花子")
 
     def test_add_comment_empty_body_rejected(self):
         res = self.client.post(

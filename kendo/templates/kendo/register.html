@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>投稿登録</title>
+  {% csrf_token %}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 32px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .required::after {
+      content: " *";
+      color: #e74c3c;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2c6fbb;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin-top: 6px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 24px;
+    }
+
+    .radio-group label {
+      font-weight: normal;
+      display: inline;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      color: #fff;
+      background-color: #2c6fbb;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #235a99;
+    }
+
+    .btn:disabled {
+      background-color: #9db6d4;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+
+    .message.error {
+      display: block;
+      background-color: #fdecea;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <h1>投稿登録</h1>
+    <form id="postForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label class="required">投稿タイプ</label>
+        <div class="radio-group">
+          <label><input type="radio" name="post_type" value="video" checked /> 動画</label>
+          <label><input type="radio" name="post_type" value="image" /> 画像</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="videoSection" style="display: block;">
+        <label for="video" class="required">動画</label>
+        <input type="file" id="video" name="video" accept="video/*" />
+      </div>
+
+      <div class="form-group" id="imageSection" style="display: none;">
+        <label for="images" class="required">画像</label>
+        <input type="file" id="images" name="images" accept="image/*" />
+      </div>
+
+      <div class="form-group">
+        <label for="category" class="required">稽古種目</label>
+        <input type="text" id="category" name="category" placeholder="例：基本稽古、形稽古、打ち込み" required />
+      </div>
+
+      <div class="form-group">
+        <label for="experience_period" class="required">経験期間</label>
+        <input type="text" id="experience_period" name="experience_period" placeholder="例：3年" required />
+      </div>
+
+      <div class="form-group">
+        <label for="title" class="required">投稿タイトル</label>
+        <input type="text" id="title" name="title" placeholder="例：今日の稽古の振り返り" required />
+      </div>
+
+      <div class="form-group">
+        <label for="nickname" class="required">ニックネーム</label>
+        <input type="text" id="nickname" name="nickname" placeholder="例：剣士太郎" required />
+      </div>
+
+      <div class="form-group">
+        <label for="memo">投稿メモ</label>
+        <textarea id="memo" name="memo" placeholder="稽古の気づきなど"></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn">登録する</button>
+
+      <div id="message" class="message"></div>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById("postForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+    const postTypeRadios = document.querySelectorAll('input[name="post_type"]');
+    const videoSection = document.getElementById("videoSection");
+    const imageSection = document.getElementById("imageSection");
+
+    function updateVisibility() {
+      const selected = document.querySelector('input[name="post_type"]:checked').value;
+      const videoInput = document.getElementById("video");
+      const imagesInput = document.getElementById("images");
+      const isVideo = selected === "video";
+      videoSection.style.display = isVideo ? "block" : "none";
+      imageSection.style.display = isVideo ? "none" : "block";
+
+      // 表示されている方だけrequiredにする
+      videoInput.required = isVideo;
+      imagesInput.required = !isVideo;
+    }
+
+    postTypeRadios.forEach(radio => radio.addEventListener("change", updateVisibility));
+    updateVisibility();
+
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(";").shift();
+      return null;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      message.className = "message";
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch("/api/posts/", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: formData,
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          const detail =
+            result.detail ||
+            (result.post_type && result.post_type[0]) ||
+            "登録に失敗しました。入力内容を確認してください。";
+          message.textContent = detail;
+          message.classList.add("error");
+          return;
+        }
+
+        window.top.location.href = `/?category=${result.category}&selected_id=${result.id}`;
+      } catch (err) {
+        message.textContent = "通信エラーが発生しました。もう一度お試しください。";
+        message.classList.add("error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>
