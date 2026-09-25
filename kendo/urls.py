@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.home, name="home"),
-    path("posts/", views.posts_json, name="posts_json"),
-    path("posts/<int:pk>/", views.post_detail_json, name="post_detail_json"),
-    path("posts/<int:pk>/comments/", views.add_comment, name="add_comment"),
+    path('register/', views.registration_view, name='registration'),
+    path('posts/', views.PostViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('posts/<int:pk>/', views.PostViewSet.as_view({'get': 'retrieve'})),
+    path('comments/', views.CommentViewSet.as_view({'post': 'create'}))
 ]

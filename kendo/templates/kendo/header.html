@@ -1,0 +1,112 @@
+<style>
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .header-brand {
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    .header-btn {
+        padding: 8px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #ef4444;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .header-btn:hover {
+        background-color: #dc2626;
+    }
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .modal-overlay.open {
+        display: flex;
+    }
+    .modal-dialog {
+        width: 90%;
+        max-width: 680px;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: #1e293b;
+        color: #fff;
+    }
+    .modal-close {
+        border: none;
+        background: transparent;
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+        line-height: 1;
+    }
+    .modal-iframe {
+        width: 100%;
+        height: 75vh;
+        border: none;
+        display: block;
+    }
+</style>
+
+<div class="header-inner">
+    <div class="header-brand">剣道ラボ</div>
+    <button id="openCreateModalBtn" class="header-btn">＋ 新規投稿</button>
+</div>
+
+<div id="createModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-head">
+            <span>新規投稿</span>
+            <button id="closeCreateModalBtn" class="modal-close" aria-label="閉じる">×</button>
+        </div>
+        <iframe id="createModalFrame" class="modal-iframe" src="/api/register/"></iframe>
+    </div>
+</div>
+
+<script>
+    const openBtn = document.getElementById("openCreateModalBtn");
+    const modal = document.getElementById("createModal");
+    const closeBtn = document.getElementById("closeCreateModalBtn");
+    const frame = document.getElementById("createModalFrame");
+
+    function openModal() {
+        modal.classList.add("open");
+        frame.src = "/api/register/";
+    }
+
+    function closeModal() {
+        modal.classList.remove("open");
+        frame.src = "about:blank";
+    }
+
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+    });
+</script>
