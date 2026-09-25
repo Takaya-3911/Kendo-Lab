@@ -80,9 +80,38 @@
         text-align: center;
         padding: 1rem 0;
     }
-    img {
+    .post-preview {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        margin-bottom: 0.4rem;
+        overflow: hidden;
+        border-radius: 4px;
+        background-color: #1e293b;
+    }
+    .post-preview img,
+    .post-preview video {
+        display: block;
         width: 100%;
         height: 100%;
+        object-fit: cover;
+    }
+    .video-preview {
+        pointer-events: none;
+    }
+    .video-placeholder,
+    .preview-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 8rem;
+        padding: 1rem;
+        color: #cbd5e1;
+        text-align: center;
+        border: 1px dashed #475569;
+    }
+    .video-placeholder {
+        flex-direction: column;
+        gap: 0.4rem;
     }
 </style>
 
@@ -104,7 +133,38 @@
         {% for post in posts %}
             <a href="?category={{ selected_category }}&selected_id={{ post.id }}" class="post-card-link">
                 <div class="post-card">
-                    <img src="{{ post.images.all.0.image.url }}" alt="" />
+                    {% with first_image=post.images.all|first %}
+                        {% if post.post_type == "video" %}
+                            {% if first_image.image %}
+                                <div class="post-preview">
+                                    <img src="{{ first_image.image.url }}" alt="{{ post.title }}のサムネイル" loading="lazy" />
+                                </div>
+                            {% elif post.video %}
+                                <video
+                                    class="post-preview video-preview"
+                                    preload="metadata"
+                                    muted
+                                    playsinline
+                                    aria-label="{{ post.title }}の動画プレビュー"
+                                    onloadedmetadata="this.currentTime = 0.001;"
+                                >
+                                    <source src="{{ post.video.url }}#t=0.001" />
+                                </video>
+                            {% else %}
+                                <div class="post-preview preview-placeholder" role="img" aria-label="プレビューなし">
+                                    <span>プレビューなし</span>
+                                </div>
+                            {% endif %}
+                        {% elif first_image.image %}
+                            <div class="post-preview">
+                                <img src="{{ first_image.image.url }}" alt="{{ post.title }}の投稿画像" loading="lazy" />
+                            </div>
+                        {% else %}
+                            <div class="post-preview preview-placeholder" role="img" aria-label="プレビューなし">
+                                <span>プレビューなし</span>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
                     <h4 class="card-title">{{ post.title }}</h4>
                     <p class="user-info">{{ post.nickname }} • {{ post.experience_period }}</p>
                 </div>
