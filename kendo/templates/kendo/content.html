@@ -33,24 +33,25 @@
             | カテゴリ: {{ selected_post.category }}
         </p>
 
-        <!-- 動画の場合 -->
-        {% if selected_post.video %}
-            <video src="{{ selected_post.video.url }}" controls style="width: 100%; max-height: 500px;"></video>
-        <!-- 画像（PostImage）の場合 -->
-        {% elif selected_post.images.all %}
-            <div class="image-gallery">
-                <img src="{{ selected_post.images.first.image.url }}" style="width: 100%; max-height: 500px; object-fit: contain;" />
-            </div>
-        {% else %}
-            <div class="placeholder">プレビューデータがありません</div>
-        {% endif %}
+        {% with first_image=selected_post.images.all|first %}
+            {% if selected_post.video %}
+                <video src="{{ selected_post.video.url }}" controls style="width: 100%; max-height: 500px;"></video>
+            {% endif %}
 
-        <!-- メモ -->
-        {% if selected_post.memo %}
-            <div class="memo-box">
-                <p><strong>稽古メモ:</strong> {{ selected_post.memo }}</p>
-            </div>
-        {% endif %}
+            {% if first_image.image %}
+                <div class="image-gallery">
+                    <img src="{{ first_image.image.url }}" style="width: 100%; max-height: 500px; object-fit: contain;" />
+                </div>
+            {% endif %}
+
+            {% if not selected_post.video and not first_image.image %}
+                <div class="placeholder">プレビューデータがありません</div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="memo-box">
+            <p><strong>稽古メモ:</strong> {{ selected_post.memo }}</p>
+        </div>
         {% include "kendo/comment.html" %}
 
     {% else %}

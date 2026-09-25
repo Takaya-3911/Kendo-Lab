@@ -26,7 +26,7 @@ def main_view(request):
         posts_queryset = posts_queryset.filter(category=selected_category)
 
     # 5. サイドバー用に最大5件取得
-    sidebar_posts = posts_queryset[:5]
+    sidebar_posts = posts_queryset.prefetch_related("images")[:5]
 
     # 6. メイン画面（左側）で大きく表示する1件を選択
     selected_id = request.GET.get("selected_id")
